@@ -1,7 +1,8 @@
 from collections import UserDict
-from datetime import datetime, timedelta
-
+from datetime import datetime
+import pickle
 import itertools
+filename = "address_book.bin"
 
 class Field:
 
@@ -174,3 +175,31 @@ class AddressBook(UserDict):
     # возвращает представление для N записей.
     def iterator(self):
         return AddressBookIterator(address_book=self, page_size = 10)
+
+    # С помощью этих методов внутри класса AddressBook теперь вы можете сохранять данные адресной 
+    # книги на диск с помощью метода save_to_file и восстанавливать их с диска с помощью метода 
+    # load_from_file. Методы используют pickle.dump и pickle.load соответственно для обработки 
+    # сериализации и десериализации словаря self.data в/из файла.
+
+    def save_to_file(self, filename):
+        with open(filename, 'wb') as file:
+            pickle.dump(self.data, file)
+
+    @classmethod
+    def load_from_file(cls, filename):
+        address_book = cls()
+        try:
+            with open(filename, 'rb') as file:
+                address_book.data = pickle.load(file)
+        except FileNotFoundError:
+            print(f"File '{filename}' not found. Creating a new empty address book.")
+            address_book.data = {}
+        return address_book
+
+    # Декоратор @classmethod используется в Python для определения метода, который работает с 
+    # самим классом, а не с экземпляром класса. В контексте класса AddressBook и метода 
+    # load_from_file использование @classmethod уместно.
+    # Используя @classmethod, мы можем создать более интуитивно понятный и чистый API, давая 
+    # понять, что метод связан с классом и не зависит от конкретных экземпляров. Это полезный 
+    # способ структурировать методы, которые имеют дело с операциями на уровне класса или 
+    # имеют поведение, как в случае load_from_file.

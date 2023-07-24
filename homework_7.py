@@ -1,7 +1,16 @@
 from classes_hw7 import AddressBook, Name, Phone, Birthday, Record
+import atexit
+# Модуль atexit позволяет регистрировать функции, которые будут выполняться при нормальном выходе 
+# из программы. В этом случае мы зарегистрируем функцию, которая будет сохранять данные адресной 
+# книги, используя метод save_to_file.
 
 address_book = AddressBook()
 address_book_iterator = None
+# filename = "address_book_data.bin"
+# address_book.save_to_file(filename)
+# # filename = "address_book_data.bin"
+# loaded_address_book = AddressBook.load_from_file(filename)
+
 
 
 def input_error(func):
@@ -65,7 +74,13 @@ def phone(*args):
 
 @input_error
 def show_all():
-    return address_book
+    global loaded_address_book
+    result = ""
+    for record in loaded_address_book.values():
+        result += str(record) + "\n"
+    return result
+
+    # return address_book
 
 @input_error
 def good_bye(*args):
@@ -125,6 +140,12 @@ def parser(text: str):
                 return cmd, data 
     return no_command, None
 
+def exit_handler(address_book, filename):
+    print("Saving address book data...")
+    address_book.save_to_file(filename)
+    print("Address book data saved. Good bye!")
+
+
 def main():
     while True:
         user_input = input(">>>")
@@ -138,5 +159,31 @@ def main():
 
 ###############################################
 if __name__ == "__main__":
+    filename = "address_book_data.bin"
+    loaded_address_book = AddressBook.load_from_file(filename)
+
+    # Register the exit_handler function with atexit
+    atexit.register(exit_handler, loaded_address_book, filename)
+    # Эта функция будет автоматически вызываться при выходе из программы либо пользователем, 
+    # вводящим команду «выход», либо другими способами. Затем функция exit_handler сохранит 
+    # данные адресной книги в файл «address_book_data.pkl», используя метод save_to_file.
+
     main()
+
+    # def help_command():
+#     commands_list = [cmd.__name__ for cmd in COMMANDS]
+#     return "Available commands: " + ", ".join(commands_list)
+
+# COMMANDS = {
+#     hello: ("hello", "hi"),
+#     add: ("add", "+"),
+#     change: ("change", "edit"),
+#     phone: ("phone", "user"),
+#     show_all: ("show all", "all"),
+#     good_bye: ("exit", "close", "end"),
+#     show_next: ("next",),
+#     rename: ("rename",),
+#     help_command: ("help",),
+# }
+
    
