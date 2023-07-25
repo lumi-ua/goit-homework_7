@@ -198,6 +198,5 @@ class AddressBook(UserDict):
                 if not filename:
                     print(f"File '{filename}' not found. Creating a new empty address book.")
                     address_book.data = {}
-        return address_book
-
-    
+            return address_book
+        return AddressBook()
