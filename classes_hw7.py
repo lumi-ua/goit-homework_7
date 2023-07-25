@@ -190,12 +190,11 @@ class AddressBook(UserDict):
     @classmethod
     def load_from_file(cls, filename):
         address_book = cls()
-        try:
-            with open(filename, 'rb') as file:
-                address_book.data = pickle.load(file)
-        except FileNotFoundError:
-            print(f"File '{filename}' not found. Creating a new empty address book.")
-            address_book.data = {}
+        with open(filename, 'rb') as file:
+            address_book.data = pickle.load(file)
+            if not filename:
+                print(f"File '{filename}' not found. Creating a new empty address book.")
+                address_book.data = {}
         return address_book
 
     
