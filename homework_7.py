@@ -106,6 +106,16 @@ def rename(*args):
         else: return 'wrong username:{args[0]}'
     return None
 
+@input_error
+def find(*args):
+    value = args
+    record = address_book.search_by_name_and_phone(value)
+    if record:
+        return str(record)
+    return "Not found"
+    
+
+    
 
 COMMANDS = {
     hello: ("hello", "hi"),
@@ -115,7 +125,8 @@ COMMANDS = {
     show_all: ("show all", "all"),
     good_bye: ("exit", "close", "end"),
     show_next: ("next",),
-    rename: ("rename",)
+    rename: ("rename",),
+    find: ("find", "search")
 }
 
 def parser(text: str):

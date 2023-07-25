@@ -2,7 +2,6 @@ from collections import UserDict
 from datetime import datetime
 import pickle
 import itertools
-# filename = "address_book.bin"
 from pathlib import Path
 
 class Field:
@@ -171,7 +170,14 @@ class AddressBook(UserDict):
         if self.data.get(name):
             return self.data[name]
         return None
-    
+
+    def search_by_name_and_phone(self, request: str):
+        results = []
+        for record in self.values():
+            if record.name.value.startswith(request) or any(phone.value.endswith(request) for phone in record.phone_list):
+                results.append(record)
+        return results
+        
     # метод iterator, возвращает генератор по записям AddressBook и за одну итерацию 
     # возвращает представление для N записей.
     def iterator(self):
