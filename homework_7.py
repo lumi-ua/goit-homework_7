@@ -1,4 +1,5 @@
 from classes_hw7 import AddressBook, Name, Phone, Birthday, Record
+import readline
 
 address_book = AddressBook()
 address_book_iterator = None
@@ -128,6 +129,20 @@ COMMANDS = {
     rename: ("rename",),
     find: ("find", "search")
 }
+
+def complete(text, state):
+    results = []
+    if len(text) > 0:
+        for cmd, kwds in COMMANDS.items():
+            for kwd in kwds:
+                if kwd.lower().startswith(text):
+                    results.append(kwd)
+    results.append(None)
+    return results[state]
+################################################################
+readline.parse_and_bind("tab: complete")
+readline.set_completer(complete)
+
 
 def parser(text: str):
     for cmd, kwds in COMMANDS.items():
